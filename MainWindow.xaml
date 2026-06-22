@@ -1,0 +1,276 @@
+﻿<Window
+    x:Class="Poe2BuildManager.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="PoE2 Build Manager"
+    Height="800"
+    Width="1400"
+    MinHeight="700"
+    MinWidth="1100">
+
+    <Window.Resources>
+
+        <Style TargetType="GridViewColumnHeader">
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Left" />
+            <Setter Property="FontWeight"
+                    Value="SemiBold" />
+        </Style>
+
+        <Style TargetType="ListViewItem">
+            <Setter Property="Padding"
+                    Value="4" />
+        </Style>
+
+    </Window.Resources>
+
+    <Grid Margin="12">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+
+        <StackPanel Grid.Row="0">
+
+            <TextBlock
+                FontSize="24"
+                FontWeight="SemiBold"
+                Text="PoE2 Build Manager" />
+
+            <TextBlock
+                Margin="0,4,0,0"
+                Foreground="Gray"
+                Text="Drag .build or .zip files directly into the build list." />
+
+        </StackPanel>
+
+        <!-- Build Folder -->
+
+        <GroupBox
+            Grid.Row="1"
+            Margin="0,15,0,15"
+            Header="Build Folder">
+
+            <Grid Margin="8">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBox
+                    Grid.Column="0"
+                    Margin="0,0,10,0"
+                    Text="{Binding BuildFolder}"
+                    IsReadOnly="True"
+                    VerticalContentAlignment="Center" />
+
+                <Button
+                    Grid.Column="1"
+                    Width="100"
+                    Margin="0,0,10,0"
+                    Content="Browse..."
+                    Click="BrowseBuildFolder_Click" />
+
+                <Button
+                    Grid.Column="2"
+                    Width="100"
+                    Content="Open Folder"
+                    Click="OpenFolder_Click" />
+
+            </Grid>
+
+        </GroupBox>
+
+        <!-- Main Area -->
+
+        <Grid Grid.Row="2">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Build List -->
+
+            <GroupBox
+                Grid.Column="0"
+                Header="{Binding BuildListHeader}">
+
+                <ListView
+                    Margin="8"
+                    ItemsSource="{Binding BuildPlans}"
+                    SelectedItem="{Binding SelectedBuildPlan}"
+                    AllowDrop="True"
+                    DragEnter="BuildPlans_DragEnter"
+                    Drop="BuildPlans_Drop">
+
+                    <ListView.View>
+
+                        <GridView>
+
+                            <GridViewColumn
+                                Header="Build Name"
+                                Width="350"
+                                DisplayMemberBinding="{Binding BuildName}" />
+
+                            <GridViewColumn
+                                Header="Ascendancy"
+                                Width="150"
+                                DisplayMemberBinding="{Binding Ascendancy}" />
+
+                            <GridViewColumn
+                                Header="Description"
+                                Width="400"
+                                DisplayMemberBinding="{Binding Description}" />
+
+                        </GridView>
+
+                    </ListView.View>
+
+                </ListView>
+
+            </GroupBox>
+
+            <!-- Details Panel -->
+
+            <GroupBox
+                Grid.Column="1"
+                Margin="10,0,0,0"
+                Header="Build Details">
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+
+                    <Grid Margin="12">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- File Name -->
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Text="File Name"
+                            FontWeight="SemiBold" />
+
+                        <TextBox
+                            Grid.Row="1"
+                            Margin="0,5,0,10"
+                            Text="{Binding SelectedBuildPlan.FileName}"
+                            IsReadOnly="True" />
+
+                        <!-- Build Name -->
+
+                        <TextBlock
+                            Grid.Row="2"
+                            Text="Build Name"
+                            FontWeight="SemiBold" />
+
+                        <TextBox
+                            Grid.Row="3"
+                            Margin="0,5,0,10"
+                            Text="{Binding SelectedBuildPlan.BuildName}" />
+
+                        <!-- Author -->
+
+                        <TextBlock
+                            Grid.Row="4"
+                            Text="Author"
+                            FontWeight="SemiBold" />
+
+                        <TextBox
+                            Grid.Row="5"
+                            Margin="0,5,0,10"
+                            Text="{Binding SelectedBuildPlan.Author}" />
+
+                        <!-- Ascendancy -->
+
+                        <TextBlock
+                            Grid.Row="6"
+                            Text="Ascendancy"
+                            FontWeight="SemiBold" />
+
+                        <TextBox
+                            Grid.Row="7"
+                            Margin="0,5,0,10"
+                            Text="{Binding SelectedBuildPlan.Ascendancy}" />
+
+                        <!-- Description -->
+
+                        <TextBlock
+                            Grid.Row="8"
+                            Text="Description"
+                            FontWeight="SemiBold" />
+
+                        <TextBox
+                            Grid.Row="9"
+                            Margin="0,5,0,10"
+                            Height="150"
+                            AcceptsReturn="True"
+                            TextWrapping="Wrap"
+                            VerticalScrollBarVisibility="Auto"
+                            Text="{Binding SelectedBuildPlan.Description}" />
+
+                        <!-- Buttons -->
+
+                        <StackPanel
+                            Grid.Row="10"
+                            Orientation="Horizontal">
+
+                            <Button
+                                Width="120"
+                                Height="32"
+                                Content="Save Changes"
+                                Command="{Binding SaveBuildCommand}" />
+
+                            <Button
+                                Width="120"
+                                Height="32"
+                                Margin="10,0,0,0"
+                                Content="Delete Build"
+                                Command="{Binding DeleteBuildPlanCommand}" />
+
+                        </StackPanel>
+
+                    </Grid>
+
+                </ScrollViewer>
+
+            </GroupBox>
+
+        </Grid>
+
+        <!-- Status Bar -->
+
+        <StatusBar Grid.Row="3">
+
+            <TextBlock
+                Text="{Binding Status}" />
+
+        </StatusBar>
+
+    </Grid>
+
+</Window>
