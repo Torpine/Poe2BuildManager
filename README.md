@@ -20,4 +20,4 @@ A desktop application for managing Path of Exile 2 build files.
 
 ## Screenshots
 
-(coming soon)
+![Main Window](Screenshots/main-window.png)
