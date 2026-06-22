@@ -12,6 +12,7 @@
     <FileVersion>0.1.0</FileVersion>
 
     <ApplicationIcon>Assets\appicon.ico</ApplicationIcon>
+    <SelfContained>false</SelfContained>
   </PropertyGroup>
 
   <ItemGroup>

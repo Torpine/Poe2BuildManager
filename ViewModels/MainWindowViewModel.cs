@@ -78,7 +78,7 @@ public partial class MainWindowViewModel : ObservableObject
                     .ToList();
         }
 
-        foreach (var buildPlan in buildPlans)
+        foreach (var buildPlan in buildPlans.OrderBy(b => b.BuildName))
         {
             BuildPlans.Add(buildPlan);
         }

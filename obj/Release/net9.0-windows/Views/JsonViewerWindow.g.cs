@@ -65,7 +65,7 @@ namespace Poe2BuildManager.Views {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/Poe2BuildManager;component/views/jsonviewerwindow.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Poe2BuildManager;V0.1.0;component/views/jsonviewerwindow.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Views\JsonViewerWindow.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);
