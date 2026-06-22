@@ -72,7 +72,7 @@ public class BuildPlanService
         }
         catch
         {
-            // Ignore malformed build files
+            buildPlan.Description = "INVALID BUILD FILE";
         }
 
         return buildPlan;
@@ -113,8 +113,15 @@ public class BuildPlanService
                     WriteIndented = true
                 });
 
+        var tempFile = buildPlan.FullPath + ".tmp";
+
         File.WriteAllText(
-            buildPlan.FullPath,
+            tempFile,
             updatedJson);
+
+        File.Move(
+            tempFile,
+            buildPlan.FullPath,
+            true);
     }
 }

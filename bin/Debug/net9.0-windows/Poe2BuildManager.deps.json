@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v9.0": {
-      "Poe2BuildManager/1.0.0": {
+      "Poe2BuildManager/0.1.0": {
         "dependencies": {
           "AvalonEdit": "6.3.1.120",
           "CommunityToolkit.Mvvm": "8.4.2"
@@ -34,7 +34,7 @@
     }
   },
   "libraries": {
-    "Poe2BuildManager/1.0.0": {
+    "Poe2BuildManager/0.1.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

@@ -19,11 +19,15 @@ public partial class MainWindowViewModel : ObservableObject
 
     private readonly ImportBuildService _importBuildService;
 
+    private FileSystemWatcher? _buildFolderWatcher;
+
+    private DateTime _lastRefresh = DateTime.MinValue;
+
     public ObservableCollection<BuildPlan> BuildPlans { get; }
         = new();
 
     public string BuildListHeader =>
-        $"Installed Builds ({BuildPlans.Count})";
+        $"Installed Builds ({BuildPlans.Count(x => !x.IsDisabled)})";
 
     public string EnableDisableButtonText =>
         SelectedBuildPlan?.IsDisabled == true
@@ -56,6 +60,7 @@ public partial class MainWindowViewModel : ObservableObject
         BuildFolder = _settings.BuildFolder;
 
         LoadBuildPlans();
+        StartBuildFolderWatcher();
     }
 
     private void LoadBuildPlans()
@@ -164,6 +169,8 @@ public partial class MainWindowViewModel : ObservableObject
         _settingsService.Save(_settings);
 
         LoadBuildPlans();
+
+        StartBuildFolderWatcher();
 
         Status = $"Build folder changed to: {folder}";
     }
@@ -312,5 +319,45 @@ public partial class MainWindowViewModel : ObservableObject
         var window = new JsonViewerWindow(json);
 
         window.ShowDialog();
+    }
+
+    private void StartBuildFolderWatcher()
+    {
+        if (!Directory.Exists(BuildFolder))
+        {
+            return;
+        }
+
+        _buildFolderWatcher?.Dispose();
+
+        _buildFolderWatcher = new FileSystemWatcher(BuildFolder);
+        
+        _buildFolderWatcher.Filter = "*.build*";
+        
+        _buildFolderWatcher.Created += OnBuildFolderChanged;
+        _buildFolderWatcher.Deleted += OnBuildFolderChanged;
+        _buildFolderWatcher.Renamed += OnBuildFolderChanged;
+
+        _buildFolderWatcher.EnableRaisingEvents = true;
+    }
+
+    private void OnBuildFolderChanged(object? sender, FileSystemEventArgs e)
+    {
+        if ((DateTime.Now - _lastRefresh).TotalMilliseconds < 500)
+        {
+            return;
+        }
+
+        _lastRefresh = DateTime.Now;
+
+        Application.Current.Dispatcher.Invoke(() =>
+        {
+            LoadBuildPlans();
+        });
+    }
+
+    public void Dispose()
+    {
+        _buildFolderWatcher?.Dispose();
     }
 }

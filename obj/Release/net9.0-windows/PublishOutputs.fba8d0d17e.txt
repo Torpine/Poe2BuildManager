@@ -1,0 +1,7 @@
+C:\Users\Kenny\Documents\myApps\Poe2BuildManager\bin\Release\net9.0-windows\publish\Poe2BuildManager.exe
+C:\Users\Kenny\Documents\myApps\Poe2BuildManager\bin\Release\net9.0-windows\publish\Poe2BuildManager.dll
+C:\Users\Kenny\Documents\myApps\Poe2BuildManager\bin\Release\net9.0-windows\publish\Poe2BuildManager.deps.json
+C:\Users\Kenny\Documents\myApps\Poe2BuildManager\bin\Release\net9.0-windows\publish\Poe2BuildManager.runtimeconfig.json
+C:\Users\Kenny\Documents\myApps\Poe2BuildManager\bin\Release\net9.0-windows\publish\Poe2BuildManager.pdb
+C:\Users\Kenny\Documents\myApps\Poe2BuildManager\bin\Release\net9.0-windows\publish\ICSharpCode.AvalonEdit.dll
+C:\Users\Kenny\Documents\myApps\Poe2BuildManager\bin\Release\net9.0-windows\publish\CommunityToolkit.Mvvm.dll

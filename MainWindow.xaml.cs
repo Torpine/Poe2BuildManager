@@ -2,6 +2,7 @@ using System.Windows;
 using Microsoft.Win32;
 using Poe2BuildManager.ViewModels;
 using System.Diagnostics;
+using System.Windows.Input;
 
 namespace Poe2BuildManager;
 
@@ -60,20 +61,29 @@ public partial class MainWindow : Window
         }
     }
 
-    private void OpenFolder_Click(
-    object sender,
-    RoutedEventArgs e)
-{
-    if (DataContext is not MainWindowViewModel vm)
+    private void OpenFolder_Click(object sender, RoutedEventArgs e)
     {
-        return;
+        if (DataContext is not MainWindowViewModel vm)
+        {
+            return;
+        }
+
+        Process.Start(
+            new ProcessStartInfo
+            {
+                FileName = vm.BuildFolder,
+                UseShellExecute = true
+            });
     }
 
-    Process.Start(
-        new ProcessStartInfo
+    private void BuildPlans_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        if (DataContext is MainWindowViewModel vm)
         {
-            FileName = vm.BuildFolder,
-            UseShellExecute = true
-        });
-}
+            if (vm.ViewJsonCommand.CanExecute(null))
+            {
+                vm.ViewJsonCommand.Execute(null);
+            }
+        }
+    }
 }
