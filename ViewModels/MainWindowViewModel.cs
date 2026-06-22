@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Poe2BuildManager.Models;
 using Poe2BuildManager.Services;
+using Poe2BuildManager.Views;
 
 namespace Poe2BuildManager.ViewModels;
 
@@ -24,6 +25,11 @@ public partial class MainWindowViewModel : ObservableObject
     public string BuildListHeader =>
         $"Installed Builds ({BuildPlans.Count})";
 
+    public string EnableDisableButtonText =>
+        SelectedBuildPlan?.IsDisabled == true
+            ? "Enable Build"
+            : "Disable Build";
+
     [ObservableProperty]
     private string buildFolder = "";
 
@@ -35,6 +41,9 @@ public partial class MainWindowViewModel : ObservableObject
 
     [ObservableProperty]
     private BuildPlan? selectedBuildPlan;
+
+    [ObservableProperty]
+    private bool hideDisabledBuilds;
 
     public MainWindowViewModel()
     {
@@ -56,6 +65,14 @@ public partial class MainWindowViewModel : ObservableObject
         var buildPlans =
             _buildPlanService.GetBuildPlans(BuildFolder);
 
+        if (HideDisabledBuilds)
+        {
+            buildPlans =
+                buildPlans
+                    .Where(x => !x.IsDisabled)
+                    .ToList();
+        }
+
         foreach (var buildPlan in buildPlans)
         {
             BuildPlans.Add(buildPlan);
@@ -74,9 +91,35 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        var result = MessageBox.Show(
+            $"Are you sure you want to delete:\n\n{SelectedBuildPlan.BuildName}",
+            "Delete Build",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning);
+
+        if (result != MessageBoxResult.Yes)
+        {
+            return;
+        }
+
+        var deletedIndex =
+            BuildPlans.IndexOf(SelectedBuildPlan);
+
         File.Delete(SelectedBuildPlan.FullPath);
 
         LoadBuildPlans();
+
+        if (BuildPlans.Count > 0)
+        {
+            SelectedBuildPlan =
+                BuildPlans[
+                    Math.Min(
+                        deletedIndex,
+                        BuildPlans.Count - 1)];
+        }
+
+        Status =
+            "Build deleted";
     }
 
     private bool CanDeleteBuildPlan()
@@ -88,6 +131,9 @@ public partial class MainWindowViewModel : ObservableObject
     {
         DeleteBuildPlanCommand.NotifyCanExecuteChanged();
         SaveBuildCommand.NotifyCanExecuteChanged();
+        ToggleBuildEnabledCommand.NotifyCanExecuteChanged();
+
+        OnPropertyChanged(nameof(EnableDisableButtonText));
     }
 
     public void ImportFiles(
@@ -122,7 +168,7 @@ public partial class MainWindowViewModel : ObservableObject
         Status = $"Build folder changed to: {folder}";
     }
     
-   [RelayCommand(CanExecute = nameof(CanSaveBuild))]
+    [RelayCommand(CanExecute = nameof(CanSaveBuild))]
     private void SaveBuild()
     {
         if (SelectedBuildPlan == null)
@@ -130,15 +176,141 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        var selectedFile =
+            SelectedBuildPlan.FullPath;
+
         _buildPlanService.SaveBuildPlan(
             SelectedBuildPlan);
 
+        LoadBuildPlans();
+
+        SelectedBuildPlan =
+            BuildPlans.FirstOrDefault(
+                x => x.FullPath == selectedFile);
+
         Status =
-            $"Saved '{SelectedBuildPlan.BuildName}'";
+            $"Saved '{SelectedBuildPlan?.BuildName}'";
     }
 
     private bool CanSaveBuild()
     {
         return SelectedBuildPlan != null;
+    }
+
+    [RelayCommand(CanExecute = nameof(CanDisableBuild))]
+    private void DisableBuild()
+    {
+        if (SelectedBuildPlan == null)
+        {
+            return;
+        }
+
+        var newPath =
+            SelectedBuildPlan.FullPath + ".disabled";
+
+        File.Move(
+            SelectedBuildPlan.FullPath,
+            newPath);
+
+        LoadBuildPlans();
+
+        SelectedBuildPlan =
+            BuildPlans.FirstOrDefault(
+                x => x.FullPath == newPath);
+
+        Status =
+            $"Disabled '{SelectedBuildPlan?.BuildName}'";
+
+        OnPropertyChanged(nameof(EnableDisableButtonText));
+    }
+
+    private bool CanDisableBuild()
+    {
+        return SelectedBuildPlan != null
+            && !SelectedBuildPlan.IsDisabled;
+    }
+
+    [RelayCommand(CanExecute = nameof(CanEnableBuild))]
+    private void EnableBuild()
+    {
+        if (SelectedBuildPlan == null)
+        {
+            return;
+        }
+
+        var newPath =
+            SelectedBuildPlan.FullPath
+                .Replace(
+                    ".disabled",
+                    "",
+                    StringComparison.OrdinalIgnoreCase);
+
+        File.Move(
+            SelectedBuildPlan.FullPath,
+            newPath);
+
+        LoadBuildPlans();
+
+        SelectedBuildPlan =
+            BuildPlans.FirstOrDefault(
+                x => x.FullPath == newPath);
+
+        Status =
+            $"Enabled '{SelectedBuildPlan?.BuildName}'";
+        
+        OnPropertyChanged(nameof(EnableDisableButtonText));
+    }
+
+    private bool CanEnableBuild()
+    {
+        return SelectedBuildPlan?.IsDisabled == true;
+    }
+
+    partial void OnHideDisabledBuildsChanged(bool value)
+    {
+        LoadBuildPlans();
+    }
+
+    [RelayCommand(CanExecute = nameof(CanToggleBuildEnabled))]
+    private void ToggleBuildEnabled()
+    {
+        if (SelectedBuildPlan == null)
+        {
+            return;
+        }
+
+        if (SelectedBuildPlan.IsDisabled)
+        {
+            EnableBuild();
+        }
+        else
+        {
+            DisableBuild();
+        }
+
+        OnPropertyChanged(
+            nameof(EnableDisableButtonText));
+    }
+
+    private bool CanToggleBuildEnabled()
+    {
+        return SelectedBuildPlan != null;
+    }
+
+    [RelayCommand]
+    private void ViewJson()
+    {
+        if (SelectedBuildPlan == null)
+        {
+            return;
+        }
+
+        var json =
+            File.ReadAllText(
+                SelectedBuildPlan.FullPath);
+
+        var window = new JsonViewerWindow(json);
+
+        window.ShowDialog();
     }
 }

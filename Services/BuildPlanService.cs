@@ -18,7 +18,7 @@ public class BuildPlanService
 
         var files = Directory.GetFiles(
             buildFolder,
-            "*.build");
+            "*.build*");
 
         foreach (var file in files)
         {

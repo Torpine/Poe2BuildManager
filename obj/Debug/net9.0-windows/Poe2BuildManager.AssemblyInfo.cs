@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Poe2BuildManager")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+74d498eaa46016a08c153e02694a199e2305b2a3")]
 [assembly: System.Reflection.AssemblyProductAttribute("Poe2BuildManager")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Poe2BuildManager")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

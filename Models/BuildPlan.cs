@@ -24,4 +24,9 @@ public partial class BuildPlan : ObservableObject
 
     public bool HasDescription => 
         !string.IsNullOrWhiteSpace(Description);
+
+    public bool IsDisabled =>
+        FileName.EndsWith(
+            ".disabled",
+            StringComparison.OrdinalIgnoreCase);
 }

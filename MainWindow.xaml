@@ -17,11 +17,6 @@
                     Value="SemiBold" />
         </Style>
 
-        <Style TargetType="ListViewItem">
-            <Setter Property="Padding"
-                    Value="4" />
-        </Style>
-
     </Window.Resources>
 
     <Grid Margin="12">
@@ -30,7 +25,6 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Header -->
@@ -93,50 +87,89 @@
         <Grid Grid.Row="2">
 
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
                 <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <!-- Build List -->
+            <!-- Left Side -->
 
-            <GroupBox
-                Grid.Column="0"
-                Header="{Binding BuildListHeader}">
+            <Grid Grid.Column="0">
 
-                <ListView
-                    Margin="8"
-                    ItemsSource="{Binding BuildPlans}"
-                    SelectedItem="{Binding SelectedBuildPlan}"
-                    AllowDrop="True"
-                    DragEnter="BuildPlans_DragEnter"
-                    Drop="BuildPlans_Drop">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-                    <ListView.View>
+                <CheckBox
+                    Grid.Row="0"
+                    Margin="8,0,0,8"
+                    Content="Hide disabled builds"
+                    IsChecked="{Binding HideDisabledBuilds}" />
 
-                        <GridView>
+                <GroupBox
+                    Grid.Row="1"
+                    Header="{Binding BuildListHeader}">
 
-                            <GridViewColumn
-                                Header="Build Name"
-                                Width="350"
-                                DisplayMemberBinding="{Binding BuildName}" />
+                    <ListView
+                        Margin="8"
+                        ItemsSource="{Binding BuildPlans}"
+                        SelectedItem="{Binding SelectedBuildPlan}"
+                        AllowDrop="True"
+                        DragEnter="BuildPlans_DragEnter"
+                        Drop="BuildPlans_Drop">
 
-                            <GridViewColumn
-                                Header="Ascendancy"
-                                Width="150"
-                                DisplayMemberBinding="{Binding Ascendancy}" />
+                        <ListView.ItemContainerStyle>
 
-                            <GridViewColumn
-                                Header="Description"
-                                Width="400"
-                                DisplayMemberBinding="{Binding Description}" />
+                            <Style TargetType="ListViewItem">
 
-                        </GridView>
+                                <Setter Property="Padding"
+                                        Value="4"/>
 
-                    </ListView.View>
+                                <Style.Triggers>
 
-                </ListView>
+                                    <DataTrigger
+                                        Binding="{Binding IsDisabled}"
+                                        Value="True">
 
-            </GroupBox>
+                                        <Setter Property="Foreground"
+                                                Value="Gray"/>
+
+                                    </DataTrigger>
+
+                                </Style.Triggers>
+
+                            </Style>
+
+                        </ListView.ItemContainerStyle>
+
+                        <ListView.View>
+
+                            <GridView>
+
+                                <GridViewColumn
+                                    Header="Build Name"
+                                    Width="450"
+                                    DisplayMemberBinding="{Binding BuildName}" />
+
+                                <GridViewColumn
+                                    Header="Ascendancy"
+                                    Width="120"
+                                    DisplayMemberBinding="{Binding Ascendancy}" />
+
+                                <GridViewColumn
+                                    Header="Description"
+                                    Width="250"
+                                    DisplayMemberBinding="{Binding Description}" />
+
+                            </GridView>
+
+                        </ListView.View>
+
+                    </ListView>
+
+                </GroupBox>
+
+            </Grid>
 
             <!-- Details Panel -->
 
@@ -145,131 +178,188 @@
                 Margin="10,0,0,0"
                 Header="Build Details">
 
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <Grid>
 
-                    <Grid Margin="12">
+                    <!-- Empty State -->
 
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        Foreground="Gray"
+                        Text="Select a build to view details">
 
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
+                        <TextBlock.Style>
 
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
+                            <Style TargetType="TextBlock">
 
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
+                                <Setter Property="Visibility"
+                                        Value="Collapsed"/>
 
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
+                                <Style.Triggers>
 
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                                    <DataTrigger
+                                        Binding="{Binding SelectedBuildPlan}"
+                                        Value="{x:Null}">
 
-                        <!-- File Name -->
+                                        <Setter Property="Visibility"
+                                                Value="Visible"/>
 
-                        <TextBlock
-                            Grid.Row="0"
-                            Text="File Name"
-                            FontWeight="SemiBold" />
+                                    </DataTrigger>
 
-                        <TextBox
-                            Grid.Row="1"
-                            Margin="0,5,0,10"
-                            Text="{Binding SelectedBuildPlan.FileName}"
-                            IsReadOnly="True" />
+                                </Style.Triggers>
 
-                        <!-- Build Name -->
+                            </Style>
 
-                        <TextBlock
-                            Grid.Row="2"
-                            Text="Build Name"
-                            FontWeight="SemiBold" />
+                        </TextBlock.Style>
 
-                        <TextBox
-                            Grid.Row="3"
-                            Margin="0,5,0,10"
-                            Text="{Binding SelectedBuildPlan.BuildName}" />
+                    </TextBlock>
 
-                        <!-- Author -->
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
 
-                        <TextBlock
-                            Grid.Row="4"
-                            Text="Author"
-                            FontWeight="SemiBold" />
+                        <ScrollViewer.Style>
 
-                        <TextBox
-                            Grid.Row="5"
-                            Margin="0,5,0,10"
-                            Text="{Binding SelectedBuildPlan.Author}" />
+                            <Style TargetType="ScrollViewer">
 
-                        <!-- Ascendancy -->
+                                <Setter Property="Visibility"
+                                        Value="Visible"/>
 
-                        <TextBlock
-                            Grid.Row="6"
-                            Text="Ascendancy"
-                            FontWeight="SemiBold" />
+                                <Style.Triggers>
 
-                        <TextBox
-                            Grid.Row="7"
-                            Margin="0,5,0,10"
-                            Text="{Binding SelectedBuildPlan.Ascendancy}" />
+                                    <DataTrigger
+                                        Binding="{Binding SelectedBuildPlan}"
+                                        Value="{x:Null}">
 
-                        <!-- Description -->
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed"/>
 
-                        <TextBlock
-                            Grid.Row="8"
-                            Text="Description"
-                            FontWeight="SemiBold" />
+                                    </DataTrigger>
 
-                        <TextBox
-                            Grid.Row="9"
-                            Margin="0,5,0,10"
-                            Height="150"
-                            AcceptsReturn="True"
-                            TextWrapping="Wrap"
-                            VerticalScrollBarVisibility="Auto"
-                            Text="{Binding SelectedBuildPlan.Description}" />
+                                </Style.Triggers>
 
-                        <!-- Buttons -->
+                            </Style>
 
-                        <StackPanel
-                            Grid.Row="10"
-                            Orientation="Horizontal">
+                        </ScrollViewer.Style>
 
-                            <Button
-                                Width="120"
-                                Height="32"
-                                Content="Save Changes"
-                                Command="{Binding SaveBuildCommand}" />
+                        <Grid Margin="12">
 
-                            <Button
-                                Width="120"
-                                Height="32"
-                                Margin="10,0,0,0"
-                                Content="Delete Build"
-                                Command="{Binding DeleteBuildPlanCommand}" />
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
 
-                        </StackPanel>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
 
-                    </Grid>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
 
-                </ScrollViewer>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock
+                                Grid.Row="0"
+                                FontWeight="SemiBold"
+                                Text="File Name" />
+
+                            <TextBox
+                                Grid.Row="1"
+                                Margin="0,5,0,10"
+                                IsReadOnly="True"
+                                Background="#F5F5F5"
+                                BorderBrush="#D0D0D0"
+                                Text="{Binding SelectedBuildPlan.FileName}" />
+
+                            <TextBlock
+                                Grid.Row="2"
+                                FontWeight="SemiBold"
+                                Text="Build Name" />
+
+                            <TextBox
+                                Grid.Row="3"
+                                Margin="0,5,0,10"
+                                Text="{Binding SelectedBuildPlan.BuildName}" />
+
+                            <TextBlock
+                                Grid.Row="4"
+                                FontWeight="SemiBold"
+                                Text="Author" />
+
+                            <TextBox
+                                Grid.Row="5"
+                                Margin="0,5,0,10"
+                                Text="{Binding SelectedBuildPlan.Author}" />
+
+                            <TextBlock
+                                Grid.Row="6"
+                                FontWeight="SemiBold"
+                                Text="Ascendancy" />
+
+                            <TextBox
+                                Grid.Row="7"
+                                Margin="0,5,0,10"
+                                Text="{Binding SelectedBuildPlan.Ascendancy}" />
+
+                            <TextBlock
+                                Grid.Row="8"
+                                FontWeight="SemiBold"
+                                Text="Description" />
+
+                            <TextBox
+                                Grid.Row="9"
+                                Height="250"
+                                Margin="0,5,0,10"
+                                AcceptsReturn="True"
+                                TextWrapping="Wrap"
+                                VerticalScrollBarVisibility="Auto"
+                                Text="{Binding SelectedBuildPlan.Description}" />
+
+                            <StackPanel
+                                Grid.Row="10"
+                                Orientation="Horizontal">
+
+                                <Button
+                                    Width="130"
+                                    Height="32"
+                                    Content="Save Changes"
+                                    Command="{Binding SaveBuildCommand}" />
+
+                                <Button
+                                    Width="130"
+                                    Height="32"
+                                    Margin="10,0,0,0"
+                                    Content="Delete Build"
+                                    Command="{Binding DeleteBuildPlanCommand}" />
+
+                                <Button
+                                    Width="130"
+                                    Height="32"
+                                    Margin="10,0,0,0"
+                                    Content="{Binding EnableDisableButtonText}"
+                                    Command="{Binding ToggleBuildEnabledCommand}" />
+
+                                <Button
+                                    Width="120"
+                                    Margin="10,0,0,0"
+                                    Content="View JSON"
+                                    Command="{Binding ViewJsonCommand}" />
+
+                            </StackPanel>
+
+                        </Grid>
+
+                    </ScrollViewer>
+
+                </Grid>
 
             </GroupBox>
 
         </Grid>
-
-        <!-- Status Bar -->
-
-        <StatusBar Grid.Row="3">
-
-            <TextBlock
-                Text="{Binding Status}" />
-
-        </StatusBar>
 
     </Grid>
 

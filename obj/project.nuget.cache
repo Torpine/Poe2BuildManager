@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "z0KDrv585cs=",
+  "dgSpecHash": "1LqyvKtq31g=",
   "success": true,
   "projectFilePath": "C:\\Users\\Kenny\\Documents\\myApps\\Poe2BuildManager\\Poe2BuildManager.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Kenny\\.nuget\\packages\\avalonedit\\6.3.1.120\\avalonedit.6.3.1.120.nupkg.sha512",
     "C:\\Users\\Kenny\\.nuget\\packages\\communitytoolkit.mvvm\\8.4.2\\communitytoolkit.mvvm.8.4.2.nupkg.sha512"
   ],
   "logs": []

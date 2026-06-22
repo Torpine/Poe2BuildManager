@@ -39,7 +39,7 @@ public class ImportBuildService
         File.Copy(
             sourceFile,
             destination,
-            overwrite: true);
+            true);
 
         return 1;
     }
@@ -56,8 +56,8 @@ public class ImportBuildService
         foreach (var entry in archive.Entries)
         {
             if (!entry.FullName.EndsWith(
-                ".build",
-                StringComparison.OrdinalIgnoreCase))
+                    ".build",
+                    StringComparison.OrdinalIgnoreCase))
             {
                 continue;
             }
@@ -69,7 +69,7 @@ public class ImportBuildService
 
             entry.ExtractToFile(
                 destination,
-                overwrite: true);
+                true);
 
             count++;
         }
